@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Объявление</title>
-</head>
-<body>
-    <h1>{{ form.instance.pk|yesno:"Редактировать объявление,Создать объявление" }}</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Сохранить</button>
-    </form>
-    <a href="{% url 'ad_list' %}">Назад к списку</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}{{ form.instance.pk|yesno:"Редактировать объявление,Создать объявление" }}{% endblock %}
+{% block content %}
+<h1>{{ form.instance.pk|yesno:"Редактировать объявление,Создать объявление" }}</h1>
+<form method="post" class="mb-3">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Сохранить</button>
+    <a href="{% url 'ad_list' %}" class="btn btn-secondary">Назад к списку</a>
+</form>
+{% endblock %}

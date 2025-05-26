@@ -1,11 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ошибка</title>
-</head>
-<body>
-    <h1>Ошибка</h1>
-    <p>{{ message }}</p>
-    <a href="{% url 'ad_list' %}">Назад к списку</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Вход{% endblock %}
+{% block content %}
+<h1>Вход</h1>
+{% if form.errors %}
+    <div class="alert alert-danger">Неверный логин или пароль</div>
+{% endif %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Войти</button>
+    <a href="{% url 'register' %}" class="btn btn-link">Регистрация</a>
+</form>
+{% endblock %}

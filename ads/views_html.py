@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+
 from .models import Ad
 from .forms import AdForm
 
@@ -47,3 +50,15 @@ def ad_delete(request, pk):
 def ad_list(request):
     ads = Ad.objects.all().order_by('-created_at')
     return render(request, 'ads/ad_list.html', {'ads': ads})
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('ad_list')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
