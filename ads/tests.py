@@ -8,6 +8,7 @@ from .models import Ad, ExchangeProposal
 
 User = get_user_model()
 
+
 class AdAPITestCase(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='testpass')
@@ -46,6 +47,7 @@ class AdAPITestCase(APITestCase):
         response = self.client.get(url, {'search': 'Test'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(len(response.data['results']), 1)
+
 
 class ExchangeProposalAPITestCase(APITestCase):
     def setUp(self):

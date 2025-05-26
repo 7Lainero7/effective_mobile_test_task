@@ -87,7 +87,6 @@ class ExchangeProposalViewSet(viewsets.ModelViewSet):
         return ExchangeProposalSerializer
 
     def perform_create(self, serializer):
-        ad_sender = serializer.validated_data.get('ad_sender')
         ad_receiver = serializer.validated_data.get('ad_receiver')
         # Проверка: нельзя отправить предложение на свой товар
         if ad_receiver.user == self.request.user:
