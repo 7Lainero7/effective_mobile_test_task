@@ -9,8 +9,12 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+import os
+import psycopg2
 
+from psycopg2 import sql
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,6 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
+
+
+load_dotenv()
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-!z5+j5xzr2h+&=f)rjj7du&w^g0k^k@a_ed+*%esv94u7ngxq6'
 
@@ -26,6 +34,37 @@ SECRET_KEY = 'django-insecure-!z5+j5xzr2h+&=f)rjj7du&w^g0k^k@a_ed+*%esv94u7ngxq6
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+
+# Штука для автоматического создании схемы в бд
+
+db_engine = os.getenv('DB_ENGINE', 'django.db.backends.postgresql')
+if db_engine == 'django.db.backends.postgresql':
+    db_name = os.getenv('DB_NAME', 'postgres')
+    db_user = os.getenv('DB_USER', 'postgres')
+    db_password = os.getenv('DB_PASSWORD', 'qwer')
+    db_host = os.getenv('DB_HOST', 'localhost')
+    db_port = os.getenv('DB_PORT', '5432')
+    db_schema = os.getenv('DB_SCHEMA', 'barter_system')
+
+    try:
+        conn = psycopg2.connect(
+            dbname=db_name,
+            user=db_user,
+            password=db_password,
+            host=db_host,
+            port=db_port
+        )
+        conn.autocommit = True
+        with conn.cursor() as cur:
+            cur.execute(
+                sql.SQL("CREATE SCHEMA IF NOT EXISTS {}").format(
+                    sql.Identifier(db_schema)
+                )
+            )
+        conn.close()
+    except Exception as e:
+        print(f"Warning: Could not ensure schema exists: {e}")
 
 
 # Application definition
@@ -72,13 +111,20 @@ WSGI_APPLICATION = 'barter_system.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': db_engine,
+        'OPTIONS': {
+            'options': f"-c search_path={os.getenv('DB_SCHEMA', 'barter_system')}"
+        },
+        'NAME': db_name,
+        'USER': db_user,
+        'PASSWORD': db_password,
+        'HOST': db_host,
+        'PORT': db_port,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
