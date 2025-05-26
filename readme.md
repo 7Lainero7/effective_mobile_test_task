@@ -8,7 +8,7 @@
 
 1. **Клонируйте репозиторий и перейдите в папку проекта:**
    ```sh
-   git clone <ваш-репозиторий>
+   git clone https://github.com/7Lainero7/effective_mobile_test_task.git
    cd effective_mobile_test_task
    ```
 
