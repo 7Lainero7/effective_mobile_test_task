@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Объявления{% endblock %}
+{% block content %}
+<h1>Объявления</h1>
+<a href="{% url 'ad_create' %}" class="btn btn-success mb-3">Создать объявление</a>
+<ul class="list-group">
+    {% for ad in ads %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <strong>{{ ad.title }}</strong> — {{ ad.category }} ({{ ad.condition }})
+            </div>
+            <div>
+                <a href="{% url 'ad_edit' ad.pk %}" class="btn btn-sm btn-primary">Редактировать</a>
+                <a href="{% url 'ad_delete' ad.pk %}" class="btn btn-sm btn-danger">Удалить</a>
+            </div>
+        </li>
+    {% empty %}
+        <li class="list-group-item">Нет объявлений</li>
+    {% endfor %}
+</ul>
+{% endblock %}
