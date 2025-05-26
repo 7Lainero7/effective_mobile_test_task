@@ -8,4 +8,5 @@ urlpatterns = [
     path('ad/create/', views_html.ad_create, name='ad_create'),
     path('ad/<int:pk>/edit/', views_html.ad_edit, name='ad_edit'),
     path('ad/<int:pk>/delete/', views_html.ad_delete, name='ad_delete'),
+    path('register/', views_html.register, name='register'),
 ]
