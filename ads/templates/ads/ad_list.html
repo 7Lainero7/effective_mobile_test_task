@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Объявления</title>
+</head>
+<body>
+    <h1>Объявления</h1>
+    <a href="{% url 'ad_create' %}">Создать объявление</a>
+    <ul>
+        {% for ad in ads %}
+            <li>
+                <strong>{{ ad.title }}</strong> — {{ ad.category }} ({{ ad.condition }})
+                <a href="{% url 'ad_edit' ad.pk %}">Редактировать</a>
+                <a href="{% url 'ad_delete' ad.pk %}">Удалить</a>
+            </li>
+        {% empty %}
+            <li>Нет объявлений</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

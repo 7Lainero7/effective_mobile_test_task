@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Удалить объявление</title>
+</head>
+<body>
+    <h1>Удалить объявление "{{ ad.title }}"?</h1>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Удалить</button>
+        <a href="{% url 'ad_list' %}">Отмена</a>
+    </form>
+</body>
+</html>
