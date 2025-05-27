@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Все предложения обмена{% endblock %}
+{% block content %}
+<h1>Все предложения обмена</h1>
+
+<!-- Форма фильтрации -->
+<form method="get" class="mb-4">
+  <div class="row g-2">
+    <!-- аналогичные выпадающие списки, как ранее -->
+    <div class="col-md-3">
+      <select name="sender" id="sender-select" class="form-select">
+        <option value="">Все отправители</option>
+        {% for u in sender_options %}
+          <option value="{{ u.id }}" {% if selected_sender|stringformat:"s" == u.id|stringformat:"s" %}selected{% endif %}>{{ u.username }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select name="receiver" id="receiver-select" class="form-select">
+        <option value="">Все получатели</option>
+        {% for u in receiver_options %}
+          <option value="{{ u.id }}" {% if selected_receiver|stringformat:"s" == u.id|stringformat:"s" %}selected{% endif %}>{{ u.username }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select name="status" class="form-select">
+        <option value="">Все статусы</option>
+        <option value="pending" {% if selected_status == "pending" %}selected{% endif %}>Ожидает</option>
+        <option value="accepted" {% if selected_status == "accepted" %}selected{% endif %}>Принята</option>
+        <option value="rejected" {% if selected_status == "rejected" %}selected{% endif %}>Отклонена</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <button type="submit" class="btn btn-outline-primary w-100">Применить фильтр</button>
+    </div>
+  </div>
+</form>
+
+<!-- Вывод общего списка предложений -->
+<ul class="list-group">
+  {% for proposal in proposals %}
+    <li class="list-group-item">
+      <p><strong>Отправитель:</strong> {{ proposal.ad_sender.user.username }} |
+         <strong>Получатель:</strong> {{ proposal.ad_receiver.user.username }}</p>
+      <p><strong>Ваш товар:</strong> {{ proposal.ad_sender.title }} →
+         <strong>Товар получателя:</strong> {{ proposal.ad_receiver.title }}</p>
+      <p><strong>Комментарий:</strong> {{ proposal.comment }} |
+         <strong>Статус:</strong> {{ proposal.get_status_display }}</p>
+    </li>
+  {% empty %}
+    <li class="list-group-item">Нет предложений обмена</li>
+  {% endfor %}
+</ul>
+{% endblock %}

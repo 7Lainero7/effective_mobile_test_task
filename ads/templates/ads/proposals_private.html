@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Мои предложения обмена{% endblock %}
+{% block content %}
+<h1>Мои предложения обмена</h1>
+
+<!-- Форма фильтрации (аналогичная шаблону public) -->
+<form method="get" class="mb-4">
+  <div class="row g-2">
+    <div class="col-md-3">
+      <select name="sender" id="sender-select" class="form-select">
+        <option value="">Все отправители</option>
+        {% for u in sender_options %}
+          <option value="{{ u.id }}" {% if selected_sender|stringformat:"s" == u.id|stringformat:"s" %}selected{% endif %}>{{ u.username }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select name="receiver" id="receiver-select" class="form-select">
+        <option value="">Все получатели</option>
+        {% for u in receiver_options %}
+          <option value="{{ u.id }}" {% if selected_receiver|stringformat:"s" == u.id|stringformat:"s" %}selected{% endif %}>{{ u.username }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select name="status" class="form-select">
+        <option value="">Все статусы</option>
+        <option value="pending" {% if selected_status == "pending" %}selected{% endif %}>Ожидает</option>
+        <option value="accepted" {% if selected_status == "accepted" %}selected{% endif %}>Принята</option>
+        <option value="rejected" {% if selected_status == "rejected" %}selected{% endif %}>Отклонена</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <button type="submit" class="btn btn-outline-primary w-100">Применить фильтр</button>
+    </div>
+  </div>
+</form>
+
+<!-- Подключение Select2, если требуется -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#sender-select, #receiver-select').select2({
+         placeholder: 'Выберите пользователя',
+         allowClear: true,
+         width: '100%'
+    });
+});
+</script>
+
+<h2>Отправленные предложения</h2>
+<ul class="list-group mb-4">
+  {% for proposal in sent_proposals %}
+    <li class="list-group-item">
+      <p><strong>Отправитель:</strong> {{ proposal.ad_sender.user.username }} |
+         <strong>Получатель:</strong> {{ proposal.ad_receiver.user.username }}</p>
+      <p><strong>Ваш товар:</strong> {{ proposal.ad_sender.title }} →
+         <strong>Товар получателя:</strong> {{ proposal.ad_receiver.title }}</p>
+      <p><strong>Комментарий:</strong> {{ proposal.comment }} |
+         <strong>Статус:</strong> {{ proposal.get_status_display }}</p>
+    </li>
+  {% empty %}
+    <li class="list-group-item">Нет отправленных предложений</li>
+  {% endfor %}
+</ul>
+
+<h2>Полученные предложения</h2>
+<ul class="list-group">
+  {% for proposal in received_proposals %}
+    <li class="list-group-item">
+      <p><strong>Отправитель:</strong> {{ proposal.ad_sender.user.username }} |
+         <strong>Ваш товар:</strong> {{ proposal.ad_receiver.title }}</p>
+      <p><strong>Предлагаемый товар:</strong> {{ proposal.ad_sender.title }}</p>
+      <p><strong>Комментарий:</strong> {{ proposal.comment }} |
+         <strong>Статус:</strong> {{ proposal.get_status_display }}</p>
+    </li>
+  {% empty %}
+    <li class="list-group-item">Нет полученных предложений</li>
+  {% endfor %}
+</ul>
+{% endblock %}

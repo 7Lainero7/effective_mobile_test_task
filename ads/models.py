@@ -3,19 +3,20 @@ from django.contrib.auth.models import User
 
 
 class Ad(models.Model):
+    
     CONDITION_CHOICES = [
-        ('new', 'New'),
-        ('used', 'Used'),
+        ('new', 'Новый'),
+        ('used', 'Б/У'),
     ]
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ads')
+    
     title = models.CharField(max_length=255)
     description = models.TextField()
     image_url = models.URLField(blank=True, null=True)
-    category = models.CharField(max_length=100)
-    condition = models.CharField(max_length=10, choices=CONDITION_CHOICES)
+    category = models.CharField(max_length=50)
+    condition = models.CharField(max_length=10, choices=CONDITION_CHOICES, default='new')
     created_at = models.DateTimeField(auto_now_add=True)
-
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
     def __str__(self):
         return self.title
 

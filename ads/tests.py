@@ -11,6 +11,10 @@ User = get_user_model()
 
 class AdAPITestCase(APITestCase):
     def setUp(self):
+        # Очистка данных, поскольку мы используем ту же базу для тестов
+        Ad.objects.all().delete()
+        User.objects.all().delete()
+
         self.user = User.objects.create_user(username='testuser', password='testpass')
         self.client.login(username='testuser', password='testpass')
         self.ad_data = {
@@ -51,6 +55,11 @@ class AdAPITestCase(APITestCase):
 
 class ExchangeProposalAPITestCase(APITestCase):
     def setUp(self):
+        # Очистка данных для изоляции тестов
+        Ad.objects.all().delete()
+        ExchangeProposal.objects.all().delete()
+        User.objects.all().delete()
+
         self.user1 = User.objects.create_user(username='user1', password='pass1')
         self.user2 = User.objects.create_user(username='user2', password='pass2')
         self.ad1 = Ad.objects.create(user=self.user1, title='Ad1', description='desc', category='Books', condition='new')

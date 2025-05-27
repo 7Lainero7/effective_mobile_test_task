@@ -1,6 +1,6 @@
 # Barter System
 
-Платформа для обмена вещами между пользователями (Django + DRF + Bootstrap)
+Платформа для обмена вещами между пользователями, построенная с использованием Django, Django REST Framework и Bootstrap.
 
 ---
 
@@ -36,6 +36,7 @@
    DB_PORT=5432
    DB_SCHEMA=barter_system
    ```
+   _Примечание:_ Для локального теста можете временно переключиться на SQLite, изменив настройки в `.env` и файле `barter_system/settings.py`.
 
 5. **Выполните миграции:**
    ```sh
@@ -43,19 +44,30 @@
    python manage.py migrate
    ```
 
-6. **Создайте суперпользователя:**
+6. **Загрузите тестовые данные из фикстуры:**
+   Файл `initial_data.json` находится в папке `ads/fixtures/`. Для его загрузки выполните:
+   ```sh
+   python manage.py loaddata initial_data.json
+   ```
+
+7. **Запустите тесты:**
+   ```sh
+   python manage.py test
+   ```
+
+8. **Создайте суперпользователя:**
    ```sh
    python manage.py createsuperuser
    ```
 
-7. **Запустите сервер:**
+9. **Запустите сервер:**
    ```sh
    python manage.py runserver
    ```
 
-8. **Откройте в браузере:**
-   - [http://localhost:8000/](http://localhost:8000/) — HTML-интерфейс
-   - [http://localhost:8000/api/](http://localhost:8000/api/) — REST API
+10. **Откройте в браузере:**
+    - [http://localhost:8000/](http://localhost:8000/) — HTML-интерфейс
+    - [http://localhost:8000/api/](http://localhost:8000/api/) — REST API
 
 ---
 
@@ -67,64 +79,120 @@
    ```
 
 2. **Выполните миграции и создайте суперпользователя:**
+   В отдельном терминале выполните:
    ```sh
    docker-compose run web python manage.py migrate
    docker-compose run web python manage.py createsuperuser
    ```
 
-3. **Откройте [http://localhost:8000/](http://localhost:8000/)**
+3. **(Опционально) Загрузите тестовые данные из фикстуры:**
+   ```sh
+   docker-compose run web python manage.py loaddata initial_data.json
+   ```
+
+4. **Запустите тесты:**
+   ```sh
+   docker-compose run web python manage.py test
+   ```
+
+5. **Откройте приложение в браузере:**
+   Перейдите по адресу [http://localhost:8000/](http://localhost:8000/)
 
 ---
 
 ## Основные команды
 
-- **Миграции:**  
-  `python manage.py makemigrations`  
-  `python manage.py migrate`
+- **Миграции:**
+  ```sh
+  python manage.py makemigrations
+  python manage.py migrate
+  ```
+  Или в Docker:
+  ```sh
+  docker-compose run web python manage.py makemigrations
+  docker-compose run web python manage.py migrate
+  ```
 
-- **Создать суперпользователя:**  
-  `python manage.py createsuperuser`
+- **Создать суперпользователя:**
+  ```sh
+  python manage.py createsuperuser
+  ```
+  В Docker:
+  ```sh
+  docker-compose run web python manage.py createsuperuser
+  ```
 
-- **Запуск тестов:**  
-  `python manage.py test`
+- **Запуск тестов:**
+  ```sh
+  python manage.py test
+  ```
+  Или в Docker:
+  ```sh
+  docker-compose run web python manage.py test
+  ```
 
-- **Запуск сервера:**  
-  `python manage.py runserver`
+- **Запуск сервера (локально):**
+  ```sh
+  python manage.py runserver
+  ```
+  В Docker контейнере сервер уже запускается через команду в docker-compose.
+
+- **Загрузка тестовых данных из фикстуры:**
+  ```sh
+  python manage.py loaddata initial_data.json
+  ```
+  Или в Docker:
+  ```sh
+  docker-compose run web python manage.py loaddata initial_data.json
+  ```
 
 ---
 
 ## Функционал
 
-- Регистрация, вход/выход пользователей
-- CRUD для объявлений (через HTML и API)
-- Поиск и фильтрация объявлений
-- Создание и обработка предложений обмена (через API)
-- Bootstrap-оформление HTML-интерфейса
+- Регистрация, вход/выход пользователей.
+- CRUD (создание, редактирование, удаление) для объявлений как через HTML-интерфейс, так и через API.
+- Поиск и фильтрация объявлений по ключевым словам (title и description), категориям и состоянию.
+- Создание и обработка предложений обмена (с разделением на отправленные и полученные) через HTML-интерфейс и REST API.
+- Адаптивный дизайн интерфейса с использованием Bootstrap.
 
 ---
 
-## Страницы
+## Основные страницы
 
-- `/` — список объявлений, создание/редактирование/удаление (HTML)
-- `/register/` — регистрация пользователя
-- `/accounts/login/` — вход
-- `/accounts/logout/` — выход
-- `/api/ads/` — REST API для объявлений
-- `/api/proposals/` — REST API для предложений обмена
+- **HTML‑интерфейс:**
+  - `/` — список объявлений с возможностью создания, редактирования и удаления.
+  - `/register/` — регистрация пользователя.
+  - `/accounts/login/` — страница входа.
+  - `/accounts/logout/` — страница выхода.
+  - `/proposals/public/` — страница со всеми предложениями обмена (публичная).
+  - `/proposals/my/` — страница с предложениями обмена, связанными с текущим пользователем (личная).
+
+- **REST API:**
+  - `/api/ads/` — API для работы с объявлениями.
+  - `/api/proposals/` — API для работы с предложениями обмена.
+  - `/api/users/` — API для получения информации о пользователях.
 
 ---
 
 ## Проверка стиля кода
 
+Для проверки стиля кода выполните:
 ```sh
 flake8 .
+```
+Или через Docker:
+```sh
+docker-compose run web flake8 .
 ```
 
 ---
 
 ## Примечания
 
-- Для работы с PostgreSQL требуется установленный сервер БД (или используйте Docker).
-- Для локального теста можно временно переключиться на SQLite, изменив настройки в `.env` и `settings.py`.
+- Для работы с PostgreSQL требуется установленный или запущенный в Docker сервер БД.
+- Для локального тестирования можно временно переключиться на SQLite, изменив настройки в файле `.env` и `barter_system/settings.py`.
 
 ---
+
+Эта инструкция охватывает как локальный запуск проекта, так и работу в Docker‑окружении, а также описывает основные функции и страницы системы.

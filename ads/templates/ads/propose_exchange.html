@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Предложить обмен{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Предложить обмен</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Товар для обмена:</h5>
+        </div>
+        <div class="card-body">
+            <h6>{{ receiver_ad.title }}</h6>
+            <p>{{ receiver_ad.description }}</p>
+            <small>Владелец: {{ receiver_ad.user.username }}</small>
+        </div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group mb-3">
+            <label>Выберите ваш товар для обмена:</label>
+            <select name="sender_ad" class="form-control" required>
+                {% for ad in user_ads %}
+                    <option value="{{ ad.id }}">{{ ad.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Комментарий к обмену:</label>
+            {{ form.comment }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Отправить предложение</button>
+        <a href="{% url 'ad_list' %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}
