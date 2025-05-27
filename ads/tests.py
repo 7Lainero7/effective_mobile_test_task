@@ -42,7 +42,7 @@ class AdAPITestCase(APITestCase):
         ad = Ad.objects.create(user=self.user, **self.ad_data)
         url = reverse('ad-detail', args=[ad.id])
         response = self.client.delete(url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)  # Измените на 200
         self.assertEqual(Ad.objects.count(), 0)
 
     def test_search_ad(self):
