@@ -3,12 +3,12 @@ from django.contrib.auth.models import User
 
 
 class Ad(models.Model):
-    
+
     CONDITION_CHOICES = [
         ('new', 'Новый'),
         ('used', 'Б/У'),
     ]
-    
+
     title = models.CharField(max_length=255)
     description = models.TextField()
     image_url = models.URLField(blank=True, null=True)
@@ -16,12 +16,13 @@ class Ad(models.Model):
     condition = models.CharField(max_length=10, choices=CONDITION_CHOICES, default='new')
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    
+
     def __str__(self):
         return self.title
 
 
 class ExchangeProposal(models.Model):
+
     STATUS_CHOICES = [
         ('pending', 'Ожидает'),
         ('accepted', 'Принята'),

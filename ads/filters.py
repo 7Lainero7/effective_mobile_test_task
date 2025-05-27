@@ -1,8 +1,8 @@
 import django_filters
-
 from django.db.models import Q
 
 from .models import Ad
+
 
 class AdFilter(django_filters.FilterSet):
     search = django_filters.CharFilter(method='search_filter', label='Поиск')
